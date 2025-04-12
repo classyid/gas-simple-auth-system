@@ -1,0 +1,261 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistem Login Sederhana</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .container {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #4285f4;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #357ae8;
+      }
+      .error-message {
+        color: red;
+        margin-top: 15px;
+        text-align: center;
+      }
+      .success-message {
+        color: green;
+        margin-top: 15px;
+        text-align: center;
+      }
+      .hidden {
+        display: none;
+      }
+      #logoutDiv {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="loginDiv">
+        <h1>Login</h1>
+        <div class="error-message hidden" id="errorMessage"></div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+          <button type="button" onclick="processLogin()">Login</button>
+        </div>
+        <div class="form-group">
+          <button type="button" onclick="showRegister()">Register</button>
+        </div>
+      </div>
+      
+      <div id="registerDiv" class="hidden">
+        <h1>Register</h1>
+        <div class="error-message hidden" id="registerErrorMessage"></div>
+        <div class="success-message hidden" id="registerSuccessMessage"></div>
+        <div class="form-group">
+          <label for="newUsername">Username:</label>
+          <input type="text" id="newUsername" name="newUsername" required>
+        </div>
+        <div class="form-group">
+          <label for="newPassword">Password:</label>
+          <input type="password" id="newPassword" name="newPassword" required>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password:</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required>
+        </div>
+        <div class="form-group">
+          <button type="button" onclick="processRegister()">Register</button>
+        </div>
+        <div class="form-group">
+          <button type="button" onclick="showLogin()">Back to Login</button>
+        </div>
+      </div>
+      
+      <div id="welcomeDiv" class="hidden">
+        <h1>Welcome <span id="userDisplay"></span>!</h1>
+        <p>You have successfully logged in.</p>
+        <div id="logoutDiv">
+          <button type="button" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Show login form
+      function showLogin() {
+        document.getElementById('loginDiv').classList.remove('hidden');
+        document.getElementById('registerDiv').classList.add('hidden');
+        document.getElementById('welcomeDiv').classList.add('hidden');
+        document.getElementById('errorMessage').classList.add('hidden');
+      }
+      
+      // Show register form
+      function showRegister() {
+        document.getElementById('loginDiv').classList.add('hidden');
+        document.getElementById('registerDiv').classList.remove('hidden');
+        document.getElementById('welcomeDiv').classList.add('hidden');
+        document.getElementById('registerErrorMessage').classList.add('hidden');
+        document.getElementById('registerSuccessMessage').classList.add('hidden');
+      }
+      
+      // Show welcome screen
+      function showWelcome(username) {
+        document.getElementById('loginDiv').classList.add('hidden');
+        document.getElementById('registerDiv').classList.add('hidden');
+        document.getElementById('welcomeDiv').classList.remove('hidden');
+        document.getElementById('userDisplay').textContent = username;
+      }
+      
+      // Process login
+      function processLogin() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        if (!username || !password) {
+          showError('Please enter both username and password');
+          return;
+        }
+        
+        // Call the Google Apps Script function
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              showWelcome(username);
+            } else {
+              showError(result.message || 'Invalid username or password');
+            }
+          })
+          .withFailureHandler(function(error) {
+            showError('Error: ' + error.message);
+          })
+          .verifyLogin(username, password);
+      }
+      
+      // Process registration
+      function processRegister() {
+        const username = document.getElementById('newUsername').value;
+        const password = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (!username || !password || !confirmPassword) {
+          showRegisterError('Please fill all fields');
+          return;
+        }
+        
+        if (password !== confirmPassword) {
+          showRegisterError('Passwords do not match');
+          return;
+        }
+        
+        // Call the Google Apps Script function
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              showRegisterSuccess('Registration successful! You can now login.');
+              // Clear the form
+              document.getElementById('newUsername').value = '';
+              document.getElementById('newPassword').value = '';
+              document.getElementById('confirmPassword').value = '';
+            } else {
+              showRegisterError(result.message || 'Registration failed');
+            }
+          })
+          .withFailureHandler(function(error) {
+            showRegisterError('Error: ' + error.message);
+          })
+          .registerUser(username, password);
+      }
+      
+      // Logout function
+      function logout() {
+        google.script.run
+          .withSuccessHandler(function() {
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            showLogin();
+          })
+          .logout();
+      }
+      
+      // Show error message
+      function showError(message) {
+        const errorElement = document.getElementById('errorMessage');
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+      }
+      
+      // Show register error message
+      function showRegisterError(message) {
+        const errorElement = document.getElementById('registerErrorMessage');
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+        document.getElementById('registerSuccessMessage').classList.add('hidden');
+      }
+      
+      // Show register success message
+      function showRegisterSuccess(message) {
+        const successElement = document.getElementById('registerSuccessMessage');
+        successElement.textContent = message;
+        successElement.classList.remove('hidden');
+        document.getElementById('registerErrorMessage').classList.add('hidden');
+      }
+      
+      // Check if user is already logged in on page load
+      window.onload = function() {
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.isLoggedIn) {
+              showWelcome(result.username);
+            } else {
+              showLogin();
+            }
+          })
+          .checkLoginStatus();
+      };
+    </script>
+  </body>
+</html>
