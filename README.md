@@ -35,7 +35,7 @@ Try the live demo: [GAS Simple Auth System Demo](https://s.id/1dyTpiVA)
 
 ## Detailed Installation & Configuration
 
-See the [Installation Guide](docs/installation.md) for detailed step-by-step instructions.
+See the [Installation Guide](installation.md) for detailed step-by-step instructions.
 
 ## Security Considerations
 
@@ -55,7 +55,6 @@ You can easily customize:
 - Form validation rules in the JavaScript code
 - User data structure by adding columns to the spreadsheet and updating the code
 
-See [Customization Guide](docs/customization.md) for more details.
 
 ## Contributing
 
