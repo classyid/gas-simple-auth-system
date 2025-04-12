@@ -2,7 +2,7 @@
 
 A lightweight authentication system built with Google Apps Script that uses Google Spreadsheet as a database. This project provides a simple but functional login, registration, and session management system that can be quickly deployed as a web app.
 
-![GAS Simple Auth System Screenshot](https://via.placeholder.com/800x450.png?text=GAS+Simple+Auth+System)
+![GAS Simple Auth System Screenshot](https://blog.classy.id/upload/gambar_berita/663afb34739ff33b1bf999e91b9bb778_20250412145134.png)
 
 ## Features
 
@@ -15,7 +15,7 @@ A lightweight authentication system built with Google Apps Script that uses Goog
 
 ## Live Demo
 
-Try the live demo: [GAS Simple Auth System Demo](https://script.google.com/macros/s/your-deployed-script-id/exec)
+Try the live demo: [GAS Simple Auth System Demo](https://s.id/1dyTpiVA)
 
 ## Quick Start Guide
 
